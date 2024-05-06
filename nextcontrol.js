@@ -134,10 +134,10 @@ export class NextControl {
             // upon connection
             client.on('connect', async () => {
                 // set API version
-                await client.query('SetApiVersion', ['2019-03-02']).catch(() => {
-                    logger('er', 'Setting API version failed.');
-                    process.exit(2);
-                });
+                // await client.query('SetApiVersion', ['2023-03-24']).catch(() => {
+                //     // logger('er', 'Setting API version failed.');
+                //     // process.exit(2);
+                // });
 
                 // authenticate as SuperAdmin
                 await client.query('Authenticate', [Settings.trackmania.login, Settings.trackmania.password]).catch(() => {
@@ -281,7 +281,7 @@ export class NextControl {
             let p;
 
             // we need to catch callbacks from the gamemode script beforehand, to properly get along with them
-            if (method === 'ManiaPlanet.ModeScriptCallbackArray') {
+            if (method === 'TrackMania.ModeScriptCallbackArray') {
                 method = para.shift();
                 p = JSON.parse(para[0][0]);
             }
@@ -293,7 +293,7 @@ export class NextControl {
 
                 this.plugins.forEach(plugin => { if (typeof plugin.onWaypoint != "undefined") plugin.onWaypoint(p); })
 
-            } else if (method === 'ManiaPlanet.PlayerConnect') {
+            } else if (method === 'TrackMania.PlayerConnect') {
                 let login = String(para[0]);
                 p = new Classes.PlayerInfo(await this.client.query('GetPlayerInfo', [login, 1]));
 
@@ -306,7 +306,7 @@ export class NextControl {
                 // start player connect handlers
                 this.plugins.forEach(plugin => { if (typeof plugin.onPlayerConnect != "undefined")  plugin.onPlayerConnect(p, isSpectator) });
 
-            } else if (method === 'ManiaPlanet.PlayerDisconnect') {
+            } else if (method === 'TrackMania.PlayerDisconnect') {
                 let player = this.status.getPlayer(String(para[0])), //<- playerInfo
                     reason = String(para[1]);
 
@@ -321,7 +321,7 @@ export class NextControl {
                 // remove player from status
                 this.status.removePlayer(player.login);
 
-            } else if (method === 'ManiaPlanet.PlayerChat') {
+            } else if (method === 'TrackMania.PlayerChat') {
                 let login = String(para[1]),
                     text = String(para[2]),
                     isCommand = Boolean(para[3]);
@@ -387,7 +387,7 @@ export class NextControl {
                 // regular onChat function        
                 this.plugins.forEach(plugin => { if (typeof plugin.onChat != "undefined") plugin.onChat(login, text) });
 
-            } else if (method === 'ManiaPlanet.BeginMap') {
+            } else if (method === 'TrackMania.BeginMap') {
                 // parse map object
                 p = new Classes.Map(para[0]);
 
@@ -487,19 +487,19 @@ export class NextControl {
 
                 this.plugins.forEach(plugin => { if (typeof plugin.onBeginMap != "undefined") plugin.onBeginMap(p) });
 
-            } else if (method === 'ManiaPlanet.BeginMatch') {
+            } else if (method === 'TrackMania.BeginMatch') {
                 // has no parameters
                 this.plugins.forEach(plugin => { if (typeof plugin.onBeginMatch != "undefined") plugin.onBeginMatch() });
 
-            } else if (method === 'ManiaPlanet.BillUpdated') {
+            } else if (method === 'TrackMania.BillUpdated') {
                 p = new CallbackParams.UpdatedBill(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onBillUpdate != "undefined") plugin.onBillUpdate(p) });
 
-            } else if (method === 'ManiaPlanet.EndMap') {
+            } else if (method === 'TrackMania.EndMap') {
                 p = new Classes.Map(para[0]);
                 this.plugins.forEach(plugin => { if (typeof plugin.onEndMap != "undefined") plugin.onEndMap(p) });
 
-            } else if (method === 'ManiaPlanet.EndMatch') {
+            } else if (method === 'TrackMania.EndMatch') {
                 p = new CallbackParams.MatchResults(para);
 
                 // reset mode settings to default
@@ -507,31 +507,31 @@ export class NextControl {
 
                 this.plugins.forEach(plugin => { if (typeof plugin.onEndMatch != "undefined") plugin.onEndMatch(p) });
 
-            } else if (method === 'ManiaPlanet.MapListModified') {
+            } else if (method === 'TrackMania.MapListModified') {
                 p = new CallbackParams.MaplistChange(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onMaplistChange != "undefined") plugin.onMaplistChange(p) });
 
-            } else if (method === 'ManiaPlanet.PlayerAlliesChanged') {
+            } else if (method === 'TrackMania.PlayerAlliesChanged') {
                 p = para[0]; // = player login
                 this.plugins.forEach(plugin => { if (typeof plugin.onPlayersAlliesChange != "undefined") plugin.onPlayersAlliesChange(p) });
 
-            } else if (method === 'ManiaPlanet.PlayerInfoChanged') {
+            } else if (method === 'TrackMania.PlayerInfoChanged') {
                 p = new Classes.PlayerInfo(para[0]);
                 this.plugins.forEach(plugin => { if (typeof plugin.onPlayerInfoChange != "undefined") plugin.onPlayerInfoChange(p) });
 
-            } else if (method === 'ManiaPlanet.PlayerManialinkPageAnswer') {
+            } else if (method === 'TrackMania.PlayerManialinkPageAnswer') {
                 p = new CallbackParams.ManialinkPageAnswer(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onManialinkPageAnswer != "undefined") plugin.onManialinkPageAnswer(p) });
 
-            } else if (method === 'ManiaPlanet.StatusChanged') {
+            } else if (method === 'TrackMania.StatusChanged') {
                 p = Classes.ServerStatus.fromCallback(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onStatusChange != "undefined") plugin.onStatusChange(p) });
 
-            } else if (method === 'ManiaPlanet.TunnelDataReceived') {
+            } else if (method === 'TrackMania.TunnelDataReceived') {
                 p = new CallbackParams.TunnelData(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onTunnelDataRecieved != "undefined") plugin.onTunnelDataRecieved(p) });
 
-            } else if (method === 'ManiaPlanet.VoteUpdated') {
+            } else if (method === 'TrackMania.VoteUpdated') {
                 p = Classes.CallVote.fromCallback(para);
                 this.plugins.forEach(plugin => { if (typeof plugin.onVoteUpdate != "undefined") plugin.onVoteUpdate(p) });
 

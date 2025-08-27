@@ -286,7 +286,7 @@ export class NextControl {
                 p = JSON.parse(para[0][0]);
             }
 
-            //console.log(beautify({method: method, para: para}, null, 2));
+            // console.log({method: method, para: para}, null, 2);
 
             if (method === 'Trackmania.Event.WayPoint') {
                 p = new Classes.WaypointInfo(p);
@@ -361,8 +361,13 @@ export class NextControl {
                         this.adminCommands.forEach(commandDefinition => {
                             if (commandDefinition.commandName === adminCommand) {
                                 this.plugins.forEach(plugin => {
-                                    if (plugin.name == commandDefinition.pluginName)
-                                        plugin[commandDefinition.commandHandler.name](login, adminParams);
+                                    if (plugin.name == commandDefinition.pluginName) {
+                                        try {
+                                            plugin[commandDefinition.commandHandler.name](login, adminParams);
+                                        } catch (err) {
+                                            logger('er', "Error occured handling command: " + err);
+                                        }
+                                    }
                                 })
                             }
                         });
@@ -376,7 +381,11 @@ export class NextControl {
                             if (commandDefinition.commandName === command) {
                                 this.plugins.forEach(plugin => {
                                     if (plugin.name == commandDefinition.pluginName) {
-                                        plugin[commandDefinition.commandHandler.name](login, splitCommand);
+                                        try {
+                                            plugin[commandDefinition.commandHandler.name](login, splitCommand);
+                                        } catch (err){
+                                            logger('er', "Error occured handling command: " + err);
+                                        }
                                     }
                                 })
                             }

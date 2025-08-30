@@ -359,6 +359,8 @@ export class AdminSuite {
                 return;
             }
 
+            maps.Results.reverse();
+
             for (const Map of maps.Results) {
                 const MapId = Map.MapId;
                 let filename = MapId + '.Map.Gbx';
